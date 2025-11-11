@@ -1,6 +1,6 @@
 """
-SovDef Lite - MVP용 경량 파일 검색
-Google File Search를 5분 내 배포 가능하게 래핑
+SovDef Lite - Lightweight File Search for MVPs
+Wrapping Google File Search for 5-minute deployment
 """
 
 from google import genai
@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 class SovDefLite:
     """
-    경량 파일 검색 - Google File Search 직접 활용
+    Lightweight file search - Direct Google File Search integration
 
     Examples:
         >>> searcher = SovDefLite()
@@ -39,13 +39,13 @@ class SovDefLite:
         self.config.validate()
 
         self.client = genai.Client(api_key=self.config.api_key)
-        self.stores = {}  # 간단한 in-memory 캐시
+        self.stores = {}  # Simple in-memory cache
 
         logger.info("SovDefLite initialized with model: %s", self.config.default_model)
 
     def create_store(self, name: str = "default") -> str:
         """
-        파일 저장소 생성
+        Create file search store
 
         Args:
             name: Store name
@@ -82,7 +82,7 @@ class SovDefLite:
         max_size_mb: Optional[int] = None,
     ) -> Dict[str, Any]:
         """
-        파일 업로드 with 기본 검증
+        Upload file with basic validation
 
         Args:
             file_path: Path to file to upload
@@ -98,7 +98,7 @@ class SovDefLite:
         if not os.path.exists(file_path):
             return {"status": "error", "message": f"File not found: {file_path}"}
 
-        # Lite 티어: 파일 크기만 체크
+        # Lite tier: Check file size only
         size_mb = os.path.getsize(file_path) / (1024 * 1024)
         if size_mb > max_size_mb:
             return {
@@ -112,19 +112,19 @@ class SovDefLite:
         if ext not in supported_exts:
             logger.warning("File extension '%s' may not be supported", ext)
 
-        # 저장소 확인/생성
+        # Check/create store
         if store_name not in self.stores:
             logger.info("Creating new store: %s", store_name)
             self.create_store(store_name)
 
         try:
-            # 업로드
+            # Upload file
             logger.info("Uploading file: %s (%.2f MB)", file_path, size_mb)
             upload_op = self.client.file_search_stores.upload_to_file_search_store(
                 file_search_store_name=self.stores[store_name], file=file_path
             )
 
-            # 간단한 폴링
+            # Simple polling
             timeout = self.config.upload_timeout_sec
             start = time.time()
             while not upload_op.done:
@@ -181,7 +181,7 @@ class SovDefLite:
         temperature: Optional[float] = None,
     ) -> Dict[str, Any]:
         """
-        검색 및 답변 생성
+        Search and generate answer
 
         Args:
             query: Search query
@@ -208,7 +208,7 @@ class SovDefLite:
         try:
             logger.info("Searching in store '%s' with query: %s", store_name, query)
 
-            # Google File Search 호출
+            # Call Google File Search
             response = self.client.models.generate_content(
                 model=model,
                 contents=query,
@@ -244,7 +244,7 @@ class SovDefLite:
                         "message": f"Response contains banned term: {term}",
                     }
 
-            # Grounding 정보 추출
+            # Extract grounding information
             grounding = response.candidates[0].grounding_metadata
             sources = []
             if grounding:
@@ -261,7 +261,7 @@ class SovDefLite:
             return {
                 "status": "success",
                 "answer": answer,
-                "sources": sources[: self.config.max_sources],  # Lite: 최대 5개
+                "sources": sources[: self.config.max_sources],  # Lite: max 5 sources
                 "model": model,
                 "query": query,
                 "store": store_name,

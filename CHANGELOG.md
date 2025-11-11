@@ -5,10 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+---
+
 ## [1.0.0] - 2025-11-11
 
+### 🎉 FLAMEHAVEN File Search Tool - Official Release!
+
+**Major Announcement:** Initial release of SovDef FileSearch Lite - the FLAMEHAVEN File Search Tool is now open source!
+
 ### Added
-- Initial release of SovDef FileSearch Lite
 - Core `SovDefLite` class for file search and retrieval
 - Support for PDF, DOCX, MD, TXT files
 - File upload with basic validation (max 50MB in Lite tier)

@@ -13,7 +13,7 @@ setup(
     version="1.0.0",
     author="SovDef Team",
     author_email="dev@sovdef.ai",
-    description="MVP용 경량 파일 검색 - Google File Search 수준 편의성 + 기본 품질 보장",
+    description="Lightweight file search for MVPs - Google File Search level convenience with quality guarantees",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/flamehaven01/SovDef-FileSearch-Lite",

@@ -2,8 +2,8 @@
 SovDef FileSearch Lite
 ======================
 
-MVP용 경량 파일 검색 시스템
-Google File Search 수준 편의성 + 기본 품질 보장
+Lightweight file search system for MVPs
+Google File Search level convenience with quality guarantees
 """
 
 __version__ = "1.0.0"

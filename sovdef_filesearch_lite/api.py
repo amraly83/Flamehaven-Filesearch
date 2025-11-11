@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 # Initialize app
 app = FastAPI(
     title="SovDef FileSearch Lite API",
-    description="MVP용 경량 파일 검색 - Google File Search 수준 편의성 + 기본 품질 보장",
+    description="Lightweight file search for MVPs - Google File Search level convenience with quality guarantees",
     version="1.0.0",
     docs_url="/docs",
     redoc_url="/redoc",
@@ -376,7 +376,7 @@ async def root():
     return {
         "name": "SovDef FileSearch Lite API",
         "version": "1.0.0",
-        "description": "MVP용 경량 파일 검색 시스템",
+        "description": "Lightweight file search system for MVPs",
         "docs": "/docs",
         "health": "/health",
         "endpoints": {

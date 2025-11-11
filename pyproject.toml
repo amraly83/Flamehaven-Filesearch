@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "sovdef-filesearch-lite"
 version = "1.0.0"
-description = "MVP용 경량 파일 검색 - Google File Search 수준 편의성 + 기본 품질 보장"
+description = "Lightweight file search for MVPs - Google File Search level convenience with quality guarantees"
 readme = "README.md"
 requires-python = ">=3.8"
 license = {file = "LICENSE"}
