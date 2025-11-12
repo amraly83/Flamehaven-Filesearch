@@ -59,10 +59,10 @@ all = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/flamehaven01/SovDef-FileSearch-Lite"
-Documentation = "https://github.com/flamehaven01/SovDef-FileSearch-Lite#readme"
-Repository = "https://github.com/flamehaven01/SovDef-FileSearch-Lite"
-"Bug Tracker" = "https://github.com/flamehaven01/SovDef-FileSearch-Lite/issues"
+Homepage = "https://github.com/flamehaven01/Flamehaven-Filesearch"
+Documentation = "https://github.com/flamehaven01/Flamehaven-Filesearch#readme"
+Repository = "https://github.com/flamehaven01/Flamehaven-Filesearch"
+"Bug Tracker" = "https://github.com/flamehaven01/Flamehaven-Filesearch/issues"
 
 [project.scripts]
 flamehaven-api = "flamehaven_filesearch.api:main"

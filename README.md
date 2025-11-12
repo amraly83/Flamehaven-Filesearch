@@ -2,7 +2,7 @@
 
 **Open Source Semantic Document Search**
 
-[![CI/CD](https://github.com/flamehaven01/SovDef-FileSearch-Lite/actions/workflows/ci.yml/badge.svg)](https://github.com/flamehaven01/SovDef-FileSearch-Lite/actions)
+[![CI/CD](https://github.com/flamehaven01/Flamehaven-Filesearch/actions/workflows/ci.yml/badge.svg)](https://github.com/flamehaven01/Flamehaven-Filesearch/actions)
 [![PyPI version](https://badge.fury.io/py/flamehaven-filesearch.svg)](https://badge.fury.io/py/flamehaven-filesearch)
 [![Python Versions](https://img.shields.io/pypi/pyversions/flamehaven-filesearch.svg)](https://pypi.org/project/flamehaven-filesearch/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -155,8 +155,8 @@ pip install flamehaven-filesearch[all]
 ### Option 2: From Source
 
 ```bash
-git clone https://github.com/flamehaven01/SovDef-FileSearch-Lite.git
-cd SovDef-FileSearch-Lite
+git clone https://github.com/flamehaven01/Flamehaven-Filesearch.git
+cd Flamehaven-Filesearch
 pip install -e ".[api]"
 ```
 
@@ -610,8 +610,8 @@ View HTML report: `htmlcov/index.html`
 
 ```bash
 # Clone repository
-git clone https://github.com/flamehaven01/SovDef-FileSearch-Lite.git
-cd SovDef-FileSearch-Lite
+git clone https://github.com/flamehaven01/Flamehaven-Filesearch.git
+cd Flamehaven-Filesearch
 
 # Install with dev dependencies
 pip install -e ".[dev,api]"
@@ -658,8 +658,8 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ### Ways to Contribute
 
-- 🐛 **Report bugs** via [Issues](https://github.com/flamehaven01/SovDef-FileSearch-Lite/issues)
-- 💡 **Suggest features** via [Discussions](https://github.com/flamehaven01/SovDef-FileSearch-Lite/discussions)
+- 🐛 **Report bugs** via [Issues](https://github.com/flamehaven01/Flamehaven-Filesearch/issues)
+- 💡 **Suggest features** via [Discussions](https://github.com/flamehaven01/Flamehaven-Filesearch/discussions)
 - 📝 **Improve documentation**
 - 🔧 **Submit pull requests**
 - ⭐ **Star the repository** to show support!
@@ -733,10 +733,10 @@ in the Software without restriction...
 
 ## 📞 Support & Community
 
-- **GitHub Issues**: [Report bugs](https://github.com/flamehaven01/SovDef-FileSearch-Lite/issues)
-- **Discussions**: [Ask questions](https://github.com/flamehaven01/SovDef-FileSearch-Lite/discussions)
+- **GitHub Issues**: [Report bugs](https://github.com/flamehaven01/Flamehaven-Filesearch/issues)
+- **Discussions**: [Ask questions](https://github.com/flamehaven01/Flamehaven-Filesearch/discussions)
 - **Email**: dev@sovdef.ai
-- **Documentation**: [GitHub Wiki](https://github.com/flamehaven01/SovDef-FileSearch-Lite/wiki)
+- **Documentation**: [GitHub Wiki](https://github.com/flamehaven01/Flamehaven-Filesearch/wiki)
 
 ---
 
@@ -788,7 +788,7 @@ print(s.search('summary')['answer'])
 
 ### Made with ❤️ by the SovDef Team
 
-**[⭐ Star on GitHub](https://github.com/flamehaven01/SovDef-FileSearch-Lite)** | **[📚 Documentation](https://github.com/flamehaven01/SovDef-FileSearch-Lite/wiki)** | **[🐛 Report Issue](https://github.com/flamehaven01/SovDef-FileSearch-Lite/issues)**
+**[⭐ Star on GitHub](https://github.com/flamehaven01/Flamehaven-Filesearch)** | **[📚 Documentation](https://github.com/flamehaven01/Flamehaven-Filesearch/wiki)** | **[🐛 Report Issue](https://github.com/flamehaven01/Flamehaven-Filesearch/issues)**
 
 </div>
 
@@ -796,9 +796,9 @@ print(s.search('summary')['answer'])
 
 ## 📊 Project Stats
 
-![GitHub stars](https://img.shields.io/github/stars/flamehaven01/SovDef-FileSearch-Lite?style=social)
-![GitHub forks](https://img.shields.io/github/forks/flamehaven01/SovDef-FileSearch-Lite?style=social)
-![GitHub watchers](https://img.shields.io/github/watchers/flamehaven01/SovDef-FileSearch-Lite?style=social)
+![GitHub stars](https://img.shields.io/github/stars/flamehaven01/Flamehaven-Filesearch?style=social)
+![GitHub forks](https://img.shields.io/github/forks/flamehaven01/Flamehaven-Filesearch?style=social)
+![GitHub watchers](https://img.shields.io/github/watchers/flamehaven01/Flamehaven-Filesearch?style=social)
 
 ---
 

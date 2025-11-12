@@ -178,7 +178,7 @@ Before running examples:
 
 - Check the main [README](../README.md)
 - Review [API documentation](http://localhost:8000/docs)
-- Open an [issue](https://github.com/flamehaven01/SovDef-FileSearch-Lite/issues)
+- Open an [issue](https://github.com/flamehaven01/Flamehaven-Filesearch/issues)
 
 ## Contributing Examples
 

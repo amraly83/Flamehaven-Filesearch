@@ -57,7 +57,7 @@ This is a practical, developer-friendly **RAG (Retrieval Augmented Generation)**
 ### Complete Package Structure
 
 ```
-SovDef-FileSearch-Lite/
+Flamehaven-Filesearch/
 ├── flamehaven_filesearch/      # Core library
 │   ├── __init__.py
 │   ├── core.py                  # FlamehavenFileSearch class
@@ -276,8 +276,8 @@ pip install flamehaven-filesearch[api]
 
 ### From Source
 ```bash
-git clone https://github.com/flamehaven01/SovDef-FileSearch-Lite.git
-cd SovDef-FileSearch-Lite
+git clone https://github.com/flamehaven01/Flamehaven-Filesearch.git
+cd Flamehaven-Filesearch
 pip install -e ".[api]"
 ```
 
@@ -334,8 +334,8 @@ Migration will be automatic when Standard tier is released (v2.0.0).
 
 We welcome contributions!
 
-- **Bug reports:** https://github.com/flamehaven01/SovDef-FileSearch-Lite/issues
-- **Feature requests:** https://github.com/flamehaven01/SovDef-FileSearch-Lite/discussions
+- **Bug reports:** https://github.com/flamehaven01/Flamehaven-Filesearch/issues
+- **Feature requests:** https://github.com/flamehaven01/Flamehaven-Filesearch/discussions
 - **Pull requests:** See CONTRIBUTING.md
 
 ---
@@ -359,8 +359,8 @@ Built with:
 
 ## 📞 Support
 
-- **GitHub Issues:** https://github.com/flamehaven01/SovDef-FileSearch-Lite/issues
-- **Discussions:** https://github.com/flamehaven01/SovDef-FileSearch-Lite/discussions
+- **GitHub Issues:** https://github.com/flamehaven01/Flamehaven-Filesearch/issues
+- **Discussions:** https://github.com/flamehaven01/Flamehaven-Filesearch/discussions
 - **Email:** info@flamehaven.space
 
 ---
@@ -404,6 +404,6 @@ print(s.search('summary')['answer'])
 
 ### Made with ❤️ by the FLAMEHAVEN
 
-**[⭐ Star on GitHub](https://github.com/flamehaven01/SovDef-FileSearch-Lite)** | **[📚 Docs](https://github.com/flamehaven01/SovDef-FileSearch-Lite/wiki)** | **[🐛 Issues](https://github.com/flamehaven01/SovDef-FileSearch-Lite/issues)**
+**[⭐ Star on GitHub](https://github.com/flamehaven01/Flamehaven-Filesearch)** | **[📚 Docs](https://github.com/flamehaven01/Flamehaven-Filesearch/wiki)** | **[🐛 Issues](https://github.com/flamehaven01/Flamehaven-Filesearch/issues)**
 
 </div>
