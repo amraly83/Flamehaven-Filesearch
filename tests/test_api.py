@@ -63,7 +63,7 @@ class TestHealthEndpoints:
         assert response.status_code == 200
         schema = response.json()
         assert "info" in schema
-        assert schema["info"]["title"] == "SovDef FileSearch Lite API"
+        assert schema["info"]["title"] == "FLAMEHAVEN FileSearch API"
 
 
 class TestStoreEndpoints:
