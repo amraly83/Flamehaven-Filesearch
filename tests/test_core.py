@@ -3,7 +3,6 @@ Tests for FLAMEHAVEN FileSearch core functionality
 """
 
 import os
-from pathlib import Path
 
 import pytest
 

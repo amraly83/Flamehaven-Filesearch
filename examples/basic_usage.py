@@ -11,7 +11,7 @@ This example demonstrates:
 import json
 import os
 
-from flamehaven_filesearch import Config, FlamehavenFileSearch
+from flamehaven_filesearch import FlamehavenFileSearch
 
 
 def main():

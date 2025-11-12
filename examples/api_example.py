@@ -5,7 +5,6 @@ This example demonstrates how to interact with the FLAMEHAVEN FileSearch API ser
 using Python requests library.
 """
 
-import json
 from pathlib import Path
 
 import requests
