@@ -2,22 +2,19 @@
 Tests for FLAMEHAVEN FileSearch API
 """
 
+import importlib.util
 import os
 from io import BytesIO
 
 import pytest
 
-try:
-    from fastapi.testclient import TestClient
-except ModuleNotFoundError:  # pragma: no cover - optional dependency
-    pytest.skip("fastapi not installed", allow_module_level=True)
+for _pkg in ("fastapi", "httpx", "python_multipart"):
+    if importlib.util.find_spec(_pkg) is None:
+        pytest.skip(f"{_pkg} not installed", allow_module_level=True)
 
-try:
-    import python_multipart  # type: ignore  # noqa: F401
-except ModuleNotFoundError:  # pragma: no cover - optional dependency
-    pytest.skip("python-multipart not installed", allow_module_level=True)
+from fastapi.testclient import TestClient  # type: ignore  # noqa: E402
 
-from flamehaven_filesearch.api import app
+from flamehaven_filesearch.api import app  # noqa: E402
 
 
 @pytest.fixture
