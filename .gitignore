@@ -140,3 +140,39 @@ Thumbs.db
 # API keys
 .api_key
 api_key.txt
+
+# Flamehaven-Filesearch specific
+# User data storage (uploaded files)
+data/
+*/data/
+
+# Internal development files
+patches.txt
+*.patch
+.audit/
+audit*.jsonl
+doc_sanity_report*.json
+DOC_SANITY_FIXES.md
+PHASE*_COMPLETION_SUMMARY.md
+
+# Test data
+test_files/
+sample_data/
+
+# Logs and monitoring
+logs/
+*.log
+
+# Backup files
+*.bak
+*_backup/
+*.backup
+
+# Development databases
+*.db
+*.sqlite
+*.sqlite3
+
+# SIDRCE reports (internal quality metrics)
+sidrce_report*.json
+quality_report*.json
