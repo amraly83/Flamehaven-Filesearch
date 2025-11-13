@@ -1,0 +1,183 @@
+name: Security Scanning
+
+on:
+  push:
+    branches: [ main, develop, feature/* ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # Run security scans daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  bandit:
+    name: Bandit SAST
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install Bandit
+      run: |
+        pip install bandit[toml]>=1.7.0
+
+    - name: Run Bandit security scan
+      run: |
+        bandit -r flamehaven_filesearch/ \
+          -f json \
+          -o bandit-report.json \
+          --exit-zero
+
+    - name: Check Bandit results
+      run: |
+        # Fail if HIGH severity issues found
+        HIGH_COUNT=$(python -c "import json; data=json.load(open('bandit-report.json')); print(sum(1 for r in data['results'] if r['issue_severity'] == 'HIGH'))")
+        echo "High severity issues found: $HIGH_COUNT"
+        if [ "$HIGH_COUNT" -gt "0" ]; then
+          echo "ERROR: High severity security issues detected!"
+          cat bandit-report.json
+          exit 1
+        fi
+
+    - name: Upload Bandit report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: bandit-report
+        path: bandit-report.json
+        retention-days: 30
+
+  safety:
+    name: Dependency Vulnerability Scan
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        pip install safety>=3.0.0
+        pip install -r requirements.txt
+
+    - name: Run Safety scan
+      run: |
+        # Use safety scan (new command) instead of deprecated safety check
+        safety scan --output json > safety-report.json || true
+
+    - name: Check Safety results
+      run: |
+        # Fail if critical or high severity vulnerabilities found
+        if grep -q '"severity": "critical"' safety-report.json || grep -q '"severity": "high"' safety-report.json; then
+          echo "ERROR: Critical or high severity vulnerabilities detected!"
+          cat safety-report.json
+          exit 1
+        fi
+
+    - name: Upload Safety report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: safety-report
+        path: safety-report.json
+        retention-days: 30
+
+  trivy:
+    name: Trivy Container Scan
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Build Docker image
+      run: |
+        docker build -t flamehaven-filesearch:test .
+
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: 'flamehaven-filesearch:test'
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+        severity: 'CRITICAL,HIGH'
+        exit-code: '1'
+
+    - name: Upload Trivy results to GitHub Security
+      uses: github/codeql-action/upload-sarif@v3
+      if: always()
+      with:
+        sarif_file: 'trivy-results.sarif'
+
+  codeql:
+    name: CodeQL Analysis
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'python' ]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: ${{ matrix.language }}
+        queries: security-extended
+
+    - name: Autobuild
+      uses: github/codeql-action/autobuild@v3
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
+      with:
+        category: "/language:${{ matrix.language }}"
+
+  security-summary:
+    name: Security Summary
+    runs-on: ubuntu-latest
+    needs: [bandit, safety, trivy, codeql]
+    if: always()
+
+    steps:
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+
+    - name: Generate security summary
+      run: |
+        echo "# Security Scan Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "## Scan Results" >> $GITHUB_STEP_SUMMARY
+        echo "- Bandit SAST: ${{ needs.bandit.result }}" >> $GITHUB_STEP_SUMMARY
+        echo "- Safety Dependencies: ${{ needs.safety.result }}" >> $GITHUB_STEP_SUMMARY
+        echo "- Trivy Container: ${{ needs.trivy.result }}" >> $GITHUB_STEP_SUMMARY
+        echo "- CodeQL Analysis: ${{ needs.codeql.result }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+
+        if [ "${{ needs.bandit.result }}" == "success" ] && \
+           [ "${{ needs.safety.result }}" == "success" ] && \
+           [ "${{ needs.trivy.result }}" == "success" ] && \
+           [ "${{ needs.codeql.result }}" == "success" ]; then
+          echo "✅ **All security scans passed!**" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "❌ **Security scans failed - review artifacts**" >> $GITHUB_STEP_SUMMARY
+        fi
