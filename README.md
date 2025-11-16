@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/logo.png" alt="FLAMEHAVEN FileSearch" width="180" height="auto">
+<img src="assets/logo.png" alt="FLAMEHAVEN FileSearch" width="240" height="auto">
 
 # FLAMEHAVEN FileSearch
 
@@ -15,11 +15,68 @@
 
 [Quick Start (3 min)](#-3-minute-quick-start) • [Documentation](DEPLOYMENT_GUIDE_v1.2.0.md) • [Roadmap](#-roadmap) • [Contributing](CONTRIBUTING.md)
 
-### Admin Dashboard v1.2.0
+</div>
+
+---
+
+## [>] Why FLAMEHAVEN FileSearch?
+
+<table>
+<tr>
+<td width="33%">
+
+### [!] **Fast**
+From zero to production in under 5 minutes. No complex infrastructure.
+
+</td>
+<td width="33%">
+
+### [#] **Private**
+100% self-hosted. Your data never leaves your servers.
+
+</td>
+<td width="33%">
+
+### [$] **Affordable**
+Leverages Gemini's generous free tier. Process thousands of docs free.
+
+</td>
+</tr>
+</table>
+
+---
+
+## Comparison with Alternatives
+
+| Feature | FLAMEHAVEN | Pinecone | Weaviate | Custom RAG |
+|---------|-----------|----------|----------|------------|
+| **Setup Time** | < 5 min | ~20 min | ~30 min | Days |
+| **Self-Hosted** | [+] Yes | [-] No | [+] Yes | [+] Yes |
+| **Free Tier** | Generous | Limited | Yes | N/A |
+| **Code Complexity** | Low | Medium | High | Very High |
+| **Maintenance** | Minimal | None | Medium | High |
+| **Best For** | Quick POCs, SMBs | Enterprise scale | ML teams | Full control |
+
+---
+
+## [&] Key Features
+
+| Feature | Description |
+|---------|-------------|
+| **[*] Multi-Format Support** | PDF, DOCX, TXT, MD files up to 50MB |
+| **[*] Semantic Search** | Natural language queries with AI-powered answers |
+| **[*] Source Attribution** | Every answer links back to source documents |
+| **[*] Store Management** | Organize documents into separate collections |
+| **[*] Dual Interface** | Python SDK + REST API with Swagger UI |
+| **[*] Docker Ready** | One-command deployment with persistence |
+| **[*] Enterprise Auth** | v1.2.0: API keys, audit logging, rate limiting |
+| **[*] Batch Processing** | Process 1-100 queries per request |
+
+---
+
+## Admin Dashboard (v1.2.0)
 
 <img src="assets/dashboard-demo.png" alt="FLAMEHAVEN FileSearch Admin Dashboard" width="100%" style="max-width: 900px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1)">
-
-</div>
 
 ---
 
@@ -137,35 +194,6 @@ result = searcher.search(
 print(f"Answer: {result['answer']}")
 print(f"Sources: {result['sources']}")
 ```
-
----
-
-## Features
-
-### Core Features (v1.1.0+)
-
-| Feature | Description | Benefit |
-|---------|-------------|---------|
-| **Multi-format Support** | PDF, DOCX, MD, TXT (up to 50MB) | Works with all document types |
-| **Semantic Search** | AI-powered natural language queries | Far more accurate than keyword search |
-| **Source Attribution** | Original documents linked to answers | Transparency & trustworthiness |
-| **Store Management** | Organize documents into collections | Structured search across categories |
-| **REST API + Python SDK** | Two ways to integrate | Flexible deployment options |
-| **LRU Cache** | 1-hour TTL, 1000 items | <10ms response on cache hits |
-| **Prometheus Metrics** | 17 monitoring metrics | Operations visibility |
-| **Security Headers** | OWASP-compliant | Enterprise-ready |
-
-### New in v1.2.0 (Enterprise-Grade)
-
-| Feature | Description | Use Case |
-|---------|-------------|----------|
-| **[*] API Key Authentication** | Bearer token OAuth2-compatible | Multi-user environments |
-| **[*] Key Management API** | Programmatic key creation/revocation | Automated user provisioning |
-| **[*] Audit Logging** | Complete request audit trail | Compliance & security |
-| **[*] Per-Key Rate Limiting** | Customizable limits per API key | Fair resource allocation |
-| **[*] Admin Dashboard** | Web UI for key management | User-friendly operations |
-| **[&] Batch Search API** | Process 1-100 queries per request | High-throughput scenarios |
-| **[&] Redis Cache Backend** | Distributed caching | Multi-worker deployments |
 
 ---
 
