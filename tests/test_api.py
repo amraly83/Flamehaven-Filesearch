@@ -120,9 +120,7 @@ class TestSearchEndpoints:
 
     def test_search_post_with_query(self, client, mock_api_key):
         """Test search POST with query"""
-        response = client.post(
-            "/search", json={"query": "test query", "store_name": "default"}
-        )
+        response = client.post("/search", json={"query": "test query", "store_name": "default"})
         # May fail without valid API key or store
         assert response.status_code in [200, 400, 500, 503]
 

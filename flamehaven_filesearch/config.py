@@ -120,14 +120,10 @@ class Config:
                 logger.warning(
                     "Failed to initialize Redis cache (%s). Falling back to memory cache.", e
                 )
-                return SearchResultCache(
-                    maxsize=self.cache_max_size, ttl=self.cache_ttl_sec
-                )
+                return SearchResultCache(maxsize=self.cache_max_size, ttl=self.cache_ttl_sec)
         else:
             # Default to in-memory cache
-            return SearchResultCache(
-                maxsize=self.cache_max_size, ttl=self.cache_ttl_sec
-            )
+            return SearchResultCache(maxsize=self.cache_max_size, ttl=self.cache_ttl_sec)
 
     @classmethod
     def from_env(cls) -> "Config":

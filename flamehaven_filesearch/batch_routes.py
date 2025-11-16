@@ -38,6 +38,7 @@ def set_searcher(s: FlamehavenFileSearch):
 
 class BatchSearchQuery(BaseModel):
     """Single query in batch"""
+
     query: str = Field(..., description="Search query")
     store: str = Field(default="default", description="Store name")
     priority: int = Field(default=0, description="Query priority (0-10)")
@@ -45,19 +46,15 @@ class BatchSearchQuery(BaseModel):
 
 class BatchSearchRequest(BaseModel):
     """Batch search request"""
-    queries: List[BatchSearchQuery] = Field(
-        ..., description="List of search queries"
-    )
-    mode: str = Field(
-        default="sequential", description="sequential or parallel"
-    )
-    max_results: int = Field(
-        default=5, ge=1, le=10, description="Max results per query"
-    )
+
+    queries: List[BatchSearchQuery] = Field(..., description="List of search queries")
+    mode: str = Field(default="sequential", description="sequential or parallel")
+    max_results: int = Field(default=5, ge=1, le=10, description="Max results per query")
 
 
 class BatchSearchResult(BaseModel):
     """Result for single query in batch"""
+
     query: str
     store: str
     status: str
@@ -69,6 +66,7 @@ class BatchSearchResult(BaseModel):
 
 class BatchSearchResponse(BaseModel):
     """Batch search response"""
+
     status: str
     request_id: str
     total_queries: int
@@ -130,9 +128,7 @@ async def batch_search(
     try:
         if batch_request.mode == "parallel":
             # Parallel execution
-            results = await _execute_batch_parallel(
-                queries, batch_request.max_results, request_id
-            )
+            results = await _execute_batch_parallel(queries, batch_request.max_results, request_id)
         else:
             # Sequential execution (default)
             results = await _execute_batch_sequential(
@@ -170,9 +166,7 @@ async def batch_search(
 
     except Exception as e:
         logger.error("[%s] Batch search failed: %s", request_id, e)
-        MetricsCollector.record_error(
-            error_type="BatchSearchError", endpoint="/api/batch-search"
-        )
+        MetricsCollector.record_error(error_type="BatchSearchError", endpoint="/api/batch-search")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=str(e),
@@ -196,10 +190,7 @@ async def _execute_batch_parallel(
     queries: List[BatchSearchQuery], max_results: int, request_id: str
 ) -> List[BatchSearchResult]:
     """Execute queries in parallel"""
-    tasks = [
-        _execute_single_search(q, max_results, request_id)
-        for q in queries
-    ]
+    tasks = [_execute_single_search(q, max_results, request_id) for q in queries]
     results = await asyncio.gather(*tasks, return_exceptions=False)
     return results
 

@@ -25,12 +25,8 @@ logger = logging.getLogger(__name__)
 registry = CollectorRegistry()
 
 # Application info
-app_info = Info(
-    "flamehaven_filesearch_app", "Application information", registry=registry
-)
-app_info.info(
-    {"version": "1.1.0", "service": "flamehaven-filesearch", "framework": "fastapi"}
-)
+app_info = Info("flamehaven_filesearch_app", "Application information", registry=registry)
+app_info.info({"version": "1.1.0", "service": "flamehaven-filesearch", "framework": "fastapi"})
 
 # Request metrics
 http_requests_total = Counter(
@@ -102,9 +98,7 @@ cache_misses_total = Counter(
     "cache_misses_total", "Total cache misses", ["cache_type"], registry=registry
 )
 
-cache_size = Gauge(
-    "cache_size", "Current cache size", ["cache_type"], registry=registry
-)
+cache_size = Gauge("cache_size", "Current cache size", ["cache_type"], registry=registry)
 
 # Rate limiting metrics
 rate_limit_exceeded_total = Counter(
@@ -179,13 +173,9 @@ class MetricsCollector:
             status: HTTP status code
             duration: Request duration in seconds
         """
-        http_requests_total.labels(
-            method=method, endpoint=endpoint, status=str(status)
-        ).inc()
+        http_requests_total.labels(method=method, endpoint=endpoint, status=str(status)).inc()
 
-        http_request_duration_seconds.labels(method=method, endpoint=endpoint).observe(
-            duration
-        )
+        http_request_duration_seconds.labels(method=method, endpoint=endpoint).observe(duration)
 
     @staticmethod
     def record_file_upload(store: str, size_bytes: int, duration: float, success: bool):

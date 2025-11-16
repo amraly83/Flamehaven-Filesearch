@@ -41,6 +41,7 @@ def _get_admin_context(request: Request) -> str:
         )
 
     import os
+
     admin_key = os.getenv("FLAMEHAVEN_ADMIN_KEY")
     key = parts[1]
 
@@ -88,9 +89,7 @@ async def dashboard(request: Request):
         last_used = "Never"
         if key.last_used:
             try:
-                last_used_dt = datetime.fromisoformat(
-                    key.last_used.replace("Z", "+00:00")
-                )
+                last_used_dt = datetime.fromisoformat(key.last_used.replace("Z", "+00:00"))
                 diff = now - last_used_dt
                 if diff.days == 0:
                     last_used = f"{diff.seconds // 3600}h ago"
@@ -115,15 +114,13 @@ async def dashboard(request: Request):
     by_endpoint = stats.get("by_endpoint", {})
 
     # Top endpoints
-    top_endpoints = sorted(
-        by_endpoint.items(), key=lambda x: x[1], reverse=True
-    )[:5]
+    top_endpoints = sorted(by_endpoint.items(), key=lambda x: x[1], reverse=True)[:5]
 
     # Build keys HTML table rows
     if keys_data:
         rows = []
         for k in keys_data:
-            key_id = k['id']
+            key_id = k["id"]
             button_onclick = f"revokeKey('{key_id}')"
             row = (
                 "<tr>"
@@ -384,7 +381,8 @@ async def health_check_page(request: Request):
     """Simple health check page"""
     user_id = _get_admin_context(request)
 
-    html = """
+    html = (
+        """
     <!DOCTYPE html>
     <html>
     <head>
@@ -403,7 +401,9 @@ async def health_check_page(request: Request):
     </head>
     <body>
         <h1>FLAMEHAVEN FileSearch - Health Check</h1>
-        <p>Timestamp: """ + datetime.utcnow().isoformat() + """Z</p>
+        <p>Timestamp: """
+        + datetime.utcnow().isoformat()
+        + """Z</p>
         <p class="status-ok">[OK] Admin dashboard is operational</p>
         <p class="status-ok">[OK] API key management enabled</p>
         <p class="status-ok">[OK] Audit logging active</p>
@@ -411,4 +411,5 @@ async def health_check_page(request: Request):
     </body>
     </html>
     """
+    )
     return html

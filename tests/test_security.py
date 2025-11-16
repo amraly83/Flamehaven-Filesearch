@@ -77,9 +77,7 @@ class TestPathTraversalProtection:
                 filename = file_info.get("filename", "")
                 # Should not contain path separators
                 assert ".." not in filename
-                assert "/" not in filename or filename.count("/") == filename.count(
-                    os.sep
-                )
+                assert "/" not in filename or filename.count("/") == filename.count(os.sep)
                 assert "\\" not in filename
 
     def test_hidden_file_rejection(self, client):
@@ -98,9 +96,7 @@ class TestPathTraversalProtection:
             )
 
             # Should reject hidden files
-            assert (
-                response.status_code == 400
-            ), f"Hidden file not rejected: {hidden_file}"
+            assert response.status_code == 400, f"Hidden file not rejected: {hidden_file}"
             assert "Invalid filename" in response.json().get("detail", "")
 
     def test_empty_filename_rejection(self, client):

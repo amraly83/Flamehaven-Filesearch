@@ -23,9 +23,17 @@ logger = logging.getLogger(__name__)
 class APIKeyInfo:
     """API Key information (without secret)"""
 
-    def __init__(self, key_id: str, name: str, user_id: str, created_at: str,
-                 last_used: Optional[str], is_active: bool,
-                 rate_limit_per_minute: int, permissions: List[str]):
+    def __init__(
+        self,
+        key_id: str,
+        name: str,
+        user_id: str,
+        created_at: str,
+        last_used: Optional[str],
+        is_active: bool,
+        rate_limit_per_minute: int,
+        permissions: List[str],
+    ):
         self.id = key_id
         self.name = name
         self.user_id = user_id
@@ -65,7 +73,8 @@ class APIKeyManager:
             cursor = conn.cursor()
 
             # Create api_keys table
-            cursor.execute("""
+            cursor.execute(
+                """
                 CREATE TABLE IF NOT EXISTS api_keys (
                     id TEXT PRIMARY KEY,
                     name TEXT NOT NULL,
@@ -80,10 +89,12 @@ class APIKeyManager:
                     metadata TEXT,
                     created_at_unix REAL
                 )
-            """)
+            """
+            )
 
             # Create api_key_usage table for audit logging
-            cursor.execute("""
+            cursor.execute(
+                """
                 CREATE TABLE IF NOT EXISTS api_key_usage (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     api_key_id TEXT NOT NULL,
@@ -95,18 +106,23 @@ class APIKeyManager:
                     timestamp TEXT NOT NULL,
                     FOREIGN KEY(api_key_id) REFERENCES api_keys(id)
                 )
-            """)
+            """
+            )
 
             # Create index for faster lookups
-            cursor.execute("""
+            cursor.execute(
+                """
                 CREATE INDEX IF NOT EXISTS idx_api_keys_user_id
                 ON api_keys(user_id)
-            """)
+            """
+            )
 
-            cursor.execute("""
+            cursor.execute(
+                """
                 CREATE INDEX IF NOT EXISTS idx_api_key_usage_key_id
                 ON api_key_usage(api_key_id)
-            """)
+            """
+            )
 
             conn.commit()
             logger.info("API key database initialized at %s", self.db_path)
@@ -207,7 +223,9 @@ class APIKeyManager:
                 if not row:
                     return None
 
-                key_id, name, user_id, created_at, last_used, is_active, rate_limit, perms_json = row
+                key_id, name, user_id, created_at, last_used, is_active, rate_limit, perms_json = (
+                    row
+                )
 
                 # Check if key is active
                 if not is_active:
@@ -283,7 +301,9 @@ class APIKeyManager:
 
                 keys = []
                 for row in cursor.fetchall():
-                    key_id, name, user, created_at, last_used, is_active, rate_limit, perms_json = row
+                    key_id, name, user, created_at, last_used, is_active, rate_limit, perms_json = (
+                        row
+                    )
                     permissions = json.loads(perms_json) if perms_json else []
 
                     keys.append(
@@ -342,9 +362,7 @@ class APIKeyManager:
         except sqlite3.Error as e:
             logger.error("Error logging usage: %s", e)
 
-    def get_usage_stats(
-        self, user_id: Optional[str] = None, days: int = 30
-    ) -> dict:
+    def get_usage_stats(self, user_id: Optional[str] = None, days: int = 30) -> dict:
         """Get usage statistics"""
         try:
             with sqlite3.connect(self.db_path) as conn:

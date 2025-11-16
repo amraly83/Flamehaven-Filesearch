@@ -32,12 +32,8 @@ class CreateAPIKeyRequest(BaseModel):
         default=None,
         description="Permissions list. Default: [upload, search, stores]",
     )
-    rate_limit_per_minute: int = Field(
-        default=100, description="Rate limit in requests per minute"
-    )
-    expires_in_days: Optional[int] = Field(
-        default=None, description="Days until expiration"
-    )
+    rate_limit_per_minute: int = Field(default=100, description="Rate limit in requests per minute")
+    expires_in_days: Optional[int] = Field(default=None, description="Days until expiration")
 
 
 class CreateAPIKeyResponse(BaseModel):
@@ -49,10 +45,7 @@ class CreateAPIKeyResponse(BaseModel):
     created_at: str
     permissions: List[str]
     rate_limit_per_minute: int
-    warning: str = (
-        "Save your API key in a secure location. "
-        "You won't be able to see it again."
-    )
+    warning: str = "Save your API key in a secure location. " "You won't be able to see it again."
 
 
 class ListAPIKeysResponse(BaseModel):

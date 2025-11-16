@@ -57,12 +57,8 @@ class TestAPIKeyGeneration:
 
     def test_generate_key_creates_unique_keys(self, key_manager):
         """Test that generated keys are unique"""
-        key_id_1, plain_key_1 = key_manager.generate_key(
-            user_id="user1", name="Key 1"
-        )
-        key_id_2, plain_key_2 = key_manager.generate_key(
-            user_id="user1", name="Key 2"
-        )
+        key_id_1, plain_key_1 = key_manager.generate_key(user_id="user1", name="Key 1")
+        key_id_2, plain_key_2 = key_manager.generate_key(user_id="user1", name="Key 2")
 
         assert key_id_1 != key_id_2
         assert plain_key_1 != plain_key_2
@@ -109,9 +105,7 @@ class TestAPIKeyValidation:
 
     def test_validate_valid_key(self, key_manager):
         """Test validating a valid API key"""
-        key_id, plain_key = key_manager.generate_key(
-            user_id="user1", name="Test Key"
-        )
+        key_id, plain_key = key_manager.generate_key(user_id="user1", name="Test Key")
 
         key_info = key_manager.validate_key(plain_key)
         assert key_info is not None
@@ -127,9 +121,7 @@ class TestAPIKeyValidation:
 
     def test_validate_revoked_key(self, key_manager):
         """Test that revoked keys fail validation"""
-        key_id, plain_key = key_manager.generate_key(
-            user_id="user1", name="Test Key"
-        )
+        key_id, plain_key = key_manager.generate_key(user_id="user1", name="Test Key")
 
         # Revoke the key
         key_manager.revoke_key(key_id)
@@ -144,9 +136,7 @@ class TestAPIKeyManagement:
 
     def test_revoke_key(self, key_manager):
         """Test revoking an API key"""
-        key_id, plain_key = key_manager.generate_key(
-            user_id="user1", name="Test Key"
-        )
+        key_id, plain_key = key_manager.generate_key(user_id="user1", name="Test Key")
 
         # Revoke the key
         result = key_manager.revoke_key(key_id)
@@ -172,9 +162,7 @@ class TestAPIKeyManagement:
 
     def test_list_keys_excludes_secrets(self, key_manager):
         """Test that list_keys doesn't return plain keys"""
-        key_id, plain_key = key_manager.generate_key(
-            user_id="user1", name="Test Key"
-        )
+        key_id, plain_key = key_manager.generate_key(user_id="user1", name="Test Key")
 
         keys = key_manager.list_keys("user1")
         assert len(keys) == 1
@@ -319,9 +307,7 @@ class TestUsageTracking:
     def test_get_usage_stats(self, client, admin_key, key_manager):
         """Test retrieving usage statistics"""
         # Create a test key
-        key_id, plain_key = key_manager.generate_key(
-            user_id="admin", name="Test Key"
-        )
+        key_id, plain_key = key_manager.generate_key(user_id="admin", name="Test Key")
 
         # Log some usage
         key_manager.log_usage(

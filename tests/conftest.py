@@ -39,6 +39,7 @@ def temp_db():
     except PermissionError:
         # On Windows, retry with delay if locked
         import time
+
         time.sleep(0.1)
         try:
             Path(db_path).unlink()
@@ -64,7 +65,8 @@ def key_manager(temp_db, test_api_key, monkeypatch):
     cursor = conn.cursor()
 
     # Create tables if not exist
-    cursor.execute("""
+    cursor.execute(
+        """
         CREATE TABLE IF NOT EXISTS api_keys (
             id TEXT PRIMARY KEY,
             name TEXT NOT NULL,
@@ -78,9 +80,11 @@ def key_manager(temp_db, test_api_key, monkeypatch):
             permissions TEXT NOT NULL,
             metadata TEXT
         )
-    """)
+    """
+    )
 
-    cursor.execute("""
+    cursor.execute(
+        """
         CREATE TABLE IF NOT EXISTS api_key_usage (
             id TEXT PRIMARY KEY,
             api_key_id TEXT NOT NULL,
@@ -92,26 +96,31 @@ def key_manager(temp_db, test_api_key, monkeypatch):
             timestamp TEXT NOT NULL,
             FOREIGN KEY(api_key_id) REFERENCES api_keys(id)
         )
-    """)
+    """
+    )
 
     # Insert test key (use SHA256 hash for consistency)
     import hashlib
+
     key_hash = hashlib.sha256(test_api_key.encode()).hexdigest()
 
-    cursor.execute("""
+    cursor.execute(
+        """
         INSERT OR IGNORE INTO api_keys
         (id, name, key_hash, user_id, created_at, is_active, rate_limit_per_minute, permissions)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    """, (
-        "test_key_id",
-        "Test Key",
-        key_hash,
-        "test_user",
-        datetime.now().isoformat(),
-        1,
-        100,
-        '["upload", "search", "stores", "delete"]'
-    ))
+    """,
+        (
+            "test_key_id",
+            "Test Key",
+            key_hash,
+            "test_user",
+            datetime.now().isoformat(),
+            1,
+            100,
+            '["upload", "search", "stores", "delete"]',
+        ),
+    )
 
     conn.commit()
     conn.close()
@@ -125,7 +134,14 @@ class AuthenticatedTestClient(TestClient):
     def __init__(self, app, api_key=None, **kwargs):
         super().__init__(app, **kwargs)
         self.api_key = api_key
-        self.public_endpoints = ["/", "/health", "/prometheus", "/docs", "/openapi.json", "/admin/dashboard"]
+        self.public_endpoints = [
+            "/",
+            "/health",
+            "/prometheus",
+            "/docs",
+            "/openapi.json",
+            "/admin/dashboard",
+        ]
 
     def request(self, method, url, **kwargs):
         """Override request to add authentication header"""

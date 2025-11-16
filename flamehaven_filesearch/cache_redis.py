@@ -18,6 +18,7 @@ logger = logging.getLogger(__name__)
 
 try:
     import redis
+
     REDIS_AVAILABLE = True
 except ImportError:
     REDIS_AVAILABLE = False
@@ -48,9 +49,7 @@ class RedisCache:
             ttl_seconds: Time-to-live for cache items
         """
         if not REDIS_AVAILABLE:
-            raise ImportError(
-                "redis package required. Install with: pip install redis"
-            )
+            raise ImportError("redis package required. Install with: pip install redis")
 
         self.host = host
         self.port = port
@@ -70,9 +69,7 @@ class RedisCache:
             )
             # Test connection
             self.client.ping()
-            logger.info(
-                "Connected to Redis at %s:%d (db=%d)", host, port, db
-            )
+            logger.info("Connected to Redis at %s:%d (db=%d)", host, port, db)
         except Exception as e:
             logger.error("Failed to connect to Redis: %s", e)
             raise
@@ -104,9 +101,7 @@ class RedisCache:
             redis_key = self._make_key(key)
             ttl = ttl or self.ttl_seconds
 
-            self.client.setex(
-                redis_key, ttl, json.dumps(value)
-            )
+            self.client.setex(redis_key, ttl, json.dumps(value))
 
             logger.debug("Cache set: %s (ttl=%ds)", key, ttl)
             return True
@@ -282,9 +277,7 @@ def get_redis_cache(
         port = port or int(os.getenv("REDIS_PORT", "6379"))
         password = password or os.getenv("REDIS_PASSWORD")
 
-        cache = SearchResultCacheRedis(
-            host=host, port=port, password=password
-        )
+        cache = SearchResultCacheRedis(host=host, port=port, password=password)
         logger.info("Redis cache initialized at %s:%d", host, port)
         return cache
 

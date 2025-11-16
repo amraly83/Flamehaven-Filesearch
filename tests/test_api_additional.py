@@ -28,7 +28,14 @@ class AuthenticatedTestClient(TestClient):
     def __init__(self, app, api_key=None, **kwargs):
         super().__init__(app, **kwargs)
         self.api_key = api_key
-        self.public_endpoints = ["/", "/health", "/prometheus", "/docs", "/openapi.json", "/admin/dashboard"]
+        self.public_endpoints = [
+            "/",
+            "/health",
+            "/prometheus",
+            "/docs",
+            "/openapi.json",
+            "/admin/dashboard",
+        ]
 
     def request(self, method, url, **kwargs):
         """Override request to add authentication header"""
@@ -223,6 +230,4 @@ async def test_request_validation_exception_handler_customizes_file_errors():
 
     response = await request_validation_exception_handler(request, validation)
     assert response.status_code == 400
-    assert (
-        _parse_json(response)["detail"] == "Invalid filename: Filename cannot be empty"
-    )
+    assert _parse_json(response)["detail"] == "Invalid filename: Filename cannot be empty"

@@ -22,6 +22,7 @@ from flamehaven_filesearch.cache_redis import RedisCache
 # API AUTHENTICATION TESTS
 # ============================================================================
 
+
 class TestAPIKeyAuthentication:
     """Test API key generation, validation, and authentication"""
 
@@ -88,6 +89,7 @@ class TestAPIKeyAuthentication:
 # ADMIN DASHBOARD TESTS
 # ============================================================================
 
+
 class TestAdminDashboard:
     """Test admin dashboard functionality"""
 
@@ -142,6 +144,7 @@ class TestAdminDashboard:
 # ============================================================================
 # BATCH SEARCH TESTS
 # ============================================================================
+
 
 class TestBatchSearchAPI:
     """Test batch search functionality"""
@@ -205,6 +208,7 @@ class TestBatchSearchAPI:
 # REDIS CACHE BACKEND TESTS
 # ============================================================================
 
+
 class TestRedisCacheBackend:
     """Test Redis cache backend"""
 
@@ -231,7 +235,7 @@ class TestRedisCacheBackend:
             # Should use flamehaven: prefix for keys
             cache.set("test_key", "test_value")
             # Verify namespace is used (implementation detail)
-            assert hasattr(cache, 'namespace')
+            assert hasattr(cache, "namespace")
         except Exception:
             pytest.skip("Redis not available")
 
@@ -239,6 +243,7 @@ class TestRedisCacheBackend:
 # ============================================================================
 # INTEGRATION TESTS
 # ============================================================================
+
 
 class TestV120Integration:
     """Integration tests for v1.2.0 features working together"""
@@ -294,6 +299,7 @@ class TestV120Integration:
 # ============================================================================
 # API VERSION TESTS
 # ============================================================================
+
 
 class TestAPIVersion:
     """Test API version reporting"""
