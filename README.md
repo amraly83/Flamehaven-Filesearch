@@ -1,8 +1,10 @@
+<div align="center">
+
+<img src="assets/logo.png" alt="FLAMEHAVEN FileSearch" width="180" height="auto">
+
 # FLAMEHAVEN FileSearch
 
 > **Your documents. Searchable in minutes. No infrastructure needed.**
-
-<div align="center">
 
 **Search your local documents with RAG instantly**
 
