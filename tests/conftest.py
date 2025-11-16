@@ -51,6 +51,11 @@ def key_manager(temp_db, test_api_key, monkeypatch):
     # Override default database
     monkeypatch.setenv("FLAMEHAVEN_API_KEYS_DB", temp_db)
 
+    # Reset global singleton to force new instance with temp_db
+    import flamehaven_filesearch.auth as auth_module
+
+    auth_module._key_manager = None
+
     manager = get_key_manager(temp_db)
 
     # Create test API key by directly inserting (bypass hashing for testing)
@@ -123,7 +128,14 @@ def key_manager(temp_db, test_api_key, monkeypatch):
     conn.commit()
     conn.close()
 
-    return manager
+    yield manager
+
+    # Cleanup: close DB connections
+    if hasattr(manager, "conn") and manager.conn:
+        manager.conn.close()
+
+    # Reset singleton
+    auth_module._key_manager = None
 
 
 class AuthenticatedTestClient(TestClient):
@@ -160,6 +172,11 @@ def authenticated_client(test_api_key, temp_db, monkeypatch, key_manager):
     monkeypatch.setenv("FLAMEHAVEN_API_KEYS_DB", temp_db)
     monkeypatch.setenv("FLAMEHAVEN_ADMIN_KEY", "admin_test_key_12345")
 
+    # Reset global singleton in security module too
+    import flamehaven_filesearch.auth as auth_module
+
+    auth_module._key_manager = key_manager
+
     return AuthenticatedTestClient(app, api_key=test_api_key)
 
 
@@ -182,6 +199,11 @@ def admin_client(test_api_key, temp_db, monkeypatch, key_manager):
     admin_key = "admin_test_key_12345"
     monkeypatch.setenv("FLAMEHAVEN_API_KEYS_DB", temp_db)
     monkeypatch.setenv("FLAMEHAVEN_ADMIN_KEY", admin_key)
+
+    # Reset global singleton
+    import flamehaven_filesearch.auth as auth_module
+
+    auth_module._key_manager = key_manager
 
     return AuthenticatedTestClient(app, api_key=test_api_key)
 
