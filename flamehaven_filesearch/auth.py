@@ -15,7 +15,7 @@ import sqlite3
 import uuid
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -144,7 +144,7 @@ class APIKeyManager:
         permissions: Optional[List[str]] = None,
         rate_limit_per_minute: int = 100,
         expires_in_days: Optional[int] = None,
-    ) -> tuple[str, str]:
+    ) -> Tuple[str, str]:
         """
         Generate new API key
 
