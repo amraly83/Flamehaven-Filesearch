@@ -67,6 +67,64 @@ class UsageStatsResponse(BaseModel):
     by_key: dict
 
 
+# Helper functions
+
+
+def _get_admin_user(request: Request) -> str:
+    """
+    Extract admin user identifier
+
+    For now, uses a simple approach:
+    - Environment-provided admin key
+    - Or derives from request context
+
+    TODO: Implement proper admin authentication in v1.3.0
+    """
+    import os
+
+    # Simple admin key check for now
+    auth_header = request.headers.get("Authorization", "")
+
+    if not auth_header:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authentication required",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    parts = auth_header.split()
+
+    if len(parts) != 2 or parts[0].lower() != "bearer":
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid Authorization header",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    key = parts[1]
+
+    # Admin key validation (placeholder)
+    # In production, should use separate admin key management
+    admin_key = os.getenv("FLAMEHAVEN_ADMIN_KEY")
+
+    if not admin_key or key != admin_key:
+        # Alternatively, validate as regular API key
+        key_manager = get_key_manager()
+        api_key_info = key_manager.validate_key(key)
+
+        if not api_key_info:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid API key",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+
+        return api_key_info.user_id
+
+    # Admin key authenticated
+    return "admin"
+
+
 # Admin endpoints
 
 
@@ -202,61 +260,3 @@ async def get_usage_stats(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to get usage statistics",
         )
-
-
-# Helper functions
-
-
-def _get_admin_user(request: Request) -> str:
-    """
-    Extract admin user identifier
-
-    For now, uses a simple approach:
-    - Environment-provided admin key
-    - Or derives from request context
-
-    TODO: Implement proper admin authentication in v1.3.0
-    """
-    import os
-
-    # Simple admin key check for now
-    auth_header = request.headers.get("Authorization", "")
-
-    if not auth_header:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Authentication required",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-
-    parts = auth_header.split()
-
-    if len(parts) != 2 or parts[0].lower() != "bearer":
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid Authorization header",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-
-    key = parts[1]
-
-    # Admin key validation (placeholder)
-    # In production, should use separate admin key management
-    admin_key = os.getenv("FLAMEHAVEN_ADMIN_KEY")
-
-    if not admin_key or key != admin_key:
-        # Alternatively, validate as regular API key
-        key_manager = get_key_manager()
-        api_key_info = key_manager.validate_key(key)
-
-        if not api_key_info:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid API key",
-                headers={"WWW-Authenticate": "Bearer"},
-            )
-
-        return api_key_info.user_id
-
-    # Admin key authenticated
-    return "admin"
