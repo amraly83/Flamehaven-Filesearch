@@ -12,15 +12,7 @@ for _pkg in ("fastapi", "httpx", "python_multipart"):
     if importlib.util.find_spec(_pkg) is None:
         pytest.skip(f"{_pkg} not installed", allow_module_level=True)
 
-from fastapi.testclient import TestClient  # type: ignore  # noqa: E402
-
 from flamehaven_filesearch.api import app  # noqa: E402
-
-
-@pytest.fixture
-def client():
-    """Create test client"""
-    return TestClient(app)
 
 
 @pytest.fixture
@@ -32,34 +24,34 @@ def mock_api_key(monkeypatch):
 
 
 class TestHealthEndpoints:
-    """Test health and info endpoints"""
+    """Test health and info endpoints (public, no auth required)"""
 
-    def test_root_endpoint(self, client):
+    def test_root_endpoint(self, public_client):
         """Test root endpoint"""
-        response = client.get("/")
+        response = public_client.get("/")
         assert response.status_code == 200
         data = response.json()
         assert data["name"] == "FLAMEHAVEN FileSearch API"
         assert "version" in data
         assert "endpoints" in data
 
-    def test_health_check(self, client):
+    def test_health_check(self, public_client):
         """Test health check endpoint"""
-        response = client.get("/health")
+        response = public_client.get("/health")
         assert response.status_code == 200
         data = response.json()
         assert "status" in data
         assert "version" in data
         assert "uptime" in data
 
-    def test_docs_available(self, client):
+    def test_docs_available(self, public_client):
         """Test API documentation is available"""
-        response = client.get("/docs")
+        response = public_client.get("/docs")
         assert response.status_code == 200
 
-    def test_openapi_schema(self, client):
+    def test_openapi_schema(self, public_client):
         """Test OpenAPI schema is available"""
-        response = client.get("/openapi.json")
+        response = public_client.get("/openapi.json")
         assert response.status_code == 200
         schema = response.json()
         assert "info" in schema
@@ -176,14 +168,14 @@ class TestMetricsEndpoints:
 class TestErrorHandling:
     """Test error handling"""
 
-    def test_404_endpoint(self, client):
+    def test_404_endpoint(self, public_client):
         """Test non-existent endpoint returns 404"""
-        response = client.get("/nonexistent")
+        response = public_client.get("/nonexistent")
         assert response.status_code == 404
 
-    def test_invalid_method(self, client):
+    def test_invalid_method(self, public_client):
         """Test invalid HTTP method"""
-        response = client.patch("/upload")
+        response = public_client.patch("/upload")
         assert response.status_code == 405  # Method not allowed
 
 
@@ -192,21 +184,10 @@ class TestErrorHandling:
 class TestAPIIntegration:
     """Integration tests for API endpoints"""
 
-    @pytest.fixture
-    def auth_client(self):
-        """Create client with actual API key"""
-        api_key = os.getenv("GEMINI_API_KEY")
-        if not api_key:
-            pytest.skip("GEMINI_API_KEY not set")
-
-        # Set environment variable for app
-        os.environ["GEMINI_API_KEY"] = api_key
-        return TestClient(app)
-
-    def test_full_workflow(self, auth_client):
+    def test_full_workflow(self, authenticated_client):
         """Test complete upload and search workflow"""
         # Create store
-        response = auth_client.post("/stores", json={"name": "integration-test"})
+        response = authenticated_client.post("/stores", json={"name": "integration-test"})
         assert response.status_code == 200
 
         # Upload file
@@ -214,13 +195,13 @@ class TestAPIIntegration:
         files = {"file": ("test.txt", BytesIO(file_data), "text/plain")}
         data = {"store": "integration-test"}
 
-        response = auth_client.post("/upload", files=files, data=data)
+        response = authenticated_client.post("/upload", files=files, data=data)
         assert response.status_code == 200
         upload_result = response.json()
         assert upload_result["status"] == "success"
 
         # Search
-        response = auth_client.post(
+        response = authenticated_client.post(
             "/search",
             json={
                 "query": "What is this document about?",
@@ -232,10 +213,10 @@ class TestAPIIntegration:
         assert search_result["status"] == "success"
         assert "answer" in search_result
 
-    def test_metrics_after_operations(self, auth_client):
+    def test_metrics_after_operations(self, authenticated_client):
         """Test metrics after performing operations"""
         # Get metrics
-        response = auth_client.get("/metrics")
+        response = authenticated_client.get("/metrics")
         assert response.status_code == 200
         metrics = response.json()
         assert metrics["stores_count"] >= 0

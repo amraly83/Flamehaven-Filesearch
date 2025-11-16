@@ -2,10 +2,12 @@
 Caching system for FLAMEHAVEN FileSearch
 
 LRU caching for search results and file metadata with TTL support.
+Includes abstract base class for cache backends with Dependency Inversion.
 """
 
 import hashlib
 import logging
+from abc import ABC, abstractmethod
 from typing import Any, Dict, Optional
 
 from cachetools import LRUCache, TTLCache
@@ -13,7 +15,41 @@ from cachetools import LRUCache, TTLCache
 logger = logging.getLogger(__name__)
 
 
-class SearchResultCache:
+class AbstractSearchCache(ABC):
+    """
+    Abstract base class for search result caches
+
+    Defines the interface that all cache backends must implement.
+    Follows Dependency Inversion Principle (DIP) for loose coupling.
+    """
+
+    @abstractmethod
+    def get(self, query: str, store_name: str, **kwargs) -> Optional[Dict[str, Any]]:
+        """Get cached search result"""
+        pass
+
+    @abstractmethod
+    def set(self, query: str, store_name: str, result: Dict[str, Any], **kwargs):
+        """Cache search result"""
+        pass
+
+    @abstractmethod
+    def invalidate(self, query: str = None, store_name: str = None):
+        """Invalidate cache entries"""
+        pass
+
+    @abstractmethod
+    def get_stats(self) -> Dict[str, Any]:
+        """Get cache statistics"""
+        pass
+
+    @abstractmethod
+    def reset_stats(self):
+        """Reset cache statistics"""
+        pass
+
+
+class SearchResultCache(AbstractSearchCache):
     """
     LRU cache for search results with TTL (Time To Live)
 

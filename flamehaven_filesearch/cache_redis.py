@@ -3,13 +3,16 @@ Redis Cache Backend for FLAMEHAVEN FileSearch v1.2.0
 
 Provides distributed cache for multi-worker deployments.
 Replaces LRU cache when Redis is available.
+Implements AbstractSearchCache for Dependency Inversion Principle.
 """
 
 import hashlib
 import json
 import logging
 import os
-from typing import Any, Optional
+from typing import Any, Dict, Optional
+
+from .cache import AbstractSearchCache
 
 logger = logging.getLogger(__name__)
 
@@ -187,7 +190,7 @@ class RedisCache:
             logger.warning("Error closing Redis connection: %s", e)
 
 
-class SearchResultCacheRedis:
+class SearchResultCacheRedis(AbstractSearchCache):
     """Search result cache using Redis backend"""
 
     def __init__(
@@ -206,16 +209,33 @@ class SearchResultCacheRedis:
             password=password,
             ttl_seconds=ttl_seconds,
         )
+        self.ttl_seconds = ttl_seconds
 
-    def get(self, query: str, store: str) -> Optional[dict]:
-        """Get cached search result"""
-        key = self._make_cache_key(query, store)
+    def get(self, query: str, store_name: str, **kwargs) -> Optional[Dict[str, Any]]:
+        """Get cached search result (AbstractSearchCache interface)"""
+        key = self._make_cache_key(query, store_name)
         return self.cache.get(key)
 
-    def set(self, query: str, store: str, result: dict) -> bool:
-        """Cache search result"""
-        key = self._make_cache_key(query, store)
-        return self.cache.set(key, result, self.cache.ttl_seconds)
+    def set(self, query: str, store_name: str, result: Dict[str, Any], **kwargs):
+        """Cache search result (AbstractSearchCache interface)"""
+        key = self._make_cache_key(query, store_name)
+        self.cache.set(key, result, self.cache.ttl_seconds)
+
+    def invalidate(self, query: str = None, store_name: str = None):
+        """Invalidate cache entries (AbstractSearchCache interface)"""
+        if query is None and store_name is None:
+            # Clear all
+            self.cache.clear()
+        else:
+            logger.warning("Partial cache invalidation not supported in Redis backend")
+
+    def get_stats(self) -> Dict[str, Any]:
+        """Get cache statistics (AbstractSearchCache interface)"""
+        return self.cache.stats()
+
+    def reset_stats(self):
+        """Reset cache statistics (AbstractSearchCache interface)"""
+        logger.info("Redis cache stats reset (no-op)")
 
     def delete(self, query: str, store: str) -> bool:
         """Delete cached search result"""
@@ -227,7 +247,7 @@ class SearchResultCacheRedis:
         return self.cache.clear()
 
     def stats(self) -> dict:
-        """Get cache statistics"""
+        """Get cache statistics (legacy method)"""
         return self.cache.stats()
 
     @staticmethod

@@ -150,6 +150,13 @@ def authenticated_client(test_api_key, temp_db, monkeypatch, key_manager):
 
 
 @pytest.fixture
+def public_client(temp_db, monkeypatch):
+    """FastAPI test client for public endpoints (no authentication)"""
+    monkeypatch.setenv("FLAMEHAVEN_API_KEYS_DB", temp_db)
+    return TestClient(app)
+
+
+@pytest.fixture
 def client(authenticated_client):
     """Alias for authenticated_client for backward compatibility"""
     return authenticated_client

@@ -33,7 +33,7 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
 
-from .cache import get_all_cache_stats, get_search_cache
+from .cache import get_all_cache_stats
 from .config import Config
 from .core import FlamehavenFileSearch
 from .exceptions import (
@@ -227,8 +227,10 @@ def initialize_services(force: bool = False) -> None:
 
     startup_time = time.time()
 
+    # Load configuration once and use for all services
+    config = Config.from_env()
+
     try:
-        config = Config.from_env()
         searcher = FlamehavenFileSearch(config=config, allow_offline=True)
         logger.info("FLAMEHAVEN FileSearch v1.1.0 initialized successfully")
     except Exception as exc:  # pragma: no cover - defensive guard
@@ -239,8 +241,13 @@ def initialize_services(force: bool = False) -> None:
         searcher = None
 
     try:
-        search_cache = get_search_cache(maxsize=1000, ttl=3600)
-        logger.info("Caching enabled: 1000 items, 3600s TTL")
+        search_cache = config.create_search_cache()
+        logger.info(
+            "Cache initialized: %s backend, %d items max, %ds TTL",
+            config.cache_backend,
+            config.cache_max_size,
+            config.cache_ttl_sec,
+        )
     except Exception as exc:  # pragma: no cover - defensive guard
         logger.warning("Failed to initialize cache system: %s", exc)
         search_cache = None

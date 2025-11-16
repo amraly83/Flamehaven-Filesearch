@@ -22,6 +22,11 @@ class Config:
         max_sources: Maximum number of sources to return
         cache_ttl_sec: Retrieval cache TTL
         cache_max_size: Maximum cache size
+        cache_backend: Cache backend type ('memory' or 'redis')
+        redis_host: Redis host for distributed caching
+        redis_port: Redis port
+        redis_password: Redis password (optional)
+        redis_db: Redis database number
     """
 
     api_key: Optional[str] = None
@@ -33,6 +38,11 @@ class Config:
     max_sources: int = 5
     cache_ttl_sec: int = 600
     cache_max_size: int = 1024
+    cache_backend: str = "memory"  # 'memory' or 'redis'
+    redis_host: str = "localhost"
+    redis_port: int = 6379
+    redis_password: Optional[str] = None
+    redis_db: int = 1
 
     # Driftlock configuration
     min_answer_length: int = 10
@@ -81,6 +91,44 @@ class Config:
             "cache_max_size": self.cache_max_size,
         }
 
+    def create_search_cache(self) -> "AbstractSearchCache":
+        """
+        Factory method to create search cache based on configuration
+
+        Returns:
+            SearchResultCache (memory) or SearchResultCacheRedis (distributed)
+
+        Uses Dependency Injection pattern for loose coupling.
+        """
+        from .cache import SearchResultCache
+
+        if self.cache_backend == "redis":
+            try:
+                from .cache_redis import SearchResultCacheRedis
+
+                return SearchResultCacheRedis(
+                    host=self.redis_host,
+                    port=self.redis_port,
+                    password=self.redis_password,
+                    db=self.redis_db,
+                    ttl_seconds=self.cache_ttl_sec,
+                )
+            except Exception as e:
+                import logging
+
+                logger = logging.getLogger(__name__)
+                logger.warning(
+                    "Failed to initialize Redis cache (%s). Falling back to memory cache.", e
+                )
+                return SearchResultCache(
+                    maxsize=self.cache_max_size, ttl=self.cache_ttl_sec
+                )
+        else:
+            # Default to in-memory cache
+            return SearchResultCache(
+                maxsize=self.cache_max_size, ttl=self.cache_ttl_sec
+            )
+
     @classmethod
     def from_env(cls) -> "Config":
         """Create config from environment variables"""
@@ -92,4 +140,9 @@ class Config:
             max_output_tokens=int(os.getenv("MAX_OUTPUT_TOKENS", "1024")),
             temperature=float(os.getenv("TEMPERATURE", "0.5")),
             max_sources=int(os.getenv("MAX_SOURCES", "5")),
+            cache_backend=os.getenv("CACHE_BACKEND", "memory"),
+            redis_host=os.getenv("REDIS_HOST", "localhost"),
+            redis_port=int(os.getenv("REDIS_PORT", "6379")),
+            redis_password=os.getenv("REDIS_PASSWORD"),
+            redis_db=int(os.getenv("REDIS_DB", "1")),
         )
