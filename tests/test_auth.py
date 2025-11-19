@@ -81,7 +81,7 @@ class TestAPIKeyValidation:
         assert key_info.id == key_id
         assert key_info.user_id == "user1"
         assert key_info.name == "Test Key"
-        assert key_info.is_active == True
+        assert key_info.is_active is True
 
     def test_validate_invalid_key(self, key_manager):
         """Test validating invalid API key"""
