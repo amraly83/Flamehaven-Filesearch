@@ -234,6 +234,9 @@ class APIKeyManager:
                     perms_json,
                 ) = row
 
+                # Normalize SQLite boolean (0/1) to Python bool
+                is_active = bool(is_active)
+
                 # Check if key is active
                 if not is_active:
                     logger.warning("Attempted use of inactive key: %s", key_id)
@@ -318,6 +321,7 @@ class APIKeyManager:
                         rate_limit,
                         perms_json,
                     ) = row
+                    is_active = bool(is_active)
                     permissions = json.loads(perms_json) if perms_json else []
 
                     keys.append(
